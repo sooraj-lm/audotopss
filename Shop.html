@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AUTODOPS — Dark Streetwear Shop</title>
+  <style>
+    :root{
+      --bg:#0b0f14; --card:#0f1720; --muted:#9ca3af; --accent:#2dd4bf; --accent-2:#60a5fa;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#e6eef6;background:linear-gradient(180deg,var(--bg),#061018);}
+    header{padding:18px 22px;display:flex;align-items:center;gap:16px;border-bottom:1px solid rgba(255,255,255,0.03)}
+    .logo{font-weight:800;color:var(--accent);font-size:20px}
+    nav{margin-left:auto;display:flex;gap:12px}
+    nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:8px}
+    nav a.cta{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--accent-2)}
+
+    .hero{padding:36px 22px;text-align:center}
+    .hero h1{font-size:36px;margin:0 0 8px}
+    .hero p{margin:0;color:var(--muted)}
+
+    .wrap{max-width:1100px;margin:28px auto;padding:0 18px}
+
+    /* categories */
+    .cats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:22px}
+    .cat{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px 16px;border-radius:10px;cursor:pointer;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
+    .cat.active{border-color:rgba(45,212,191,0.15);box-shadow:0 6px 18px rgba(0,0,0,0.6);color:var(--accent)}
+
+    /* product grid */
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .card{background:var(--card);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);transition:transform .18s ease, box-shadow .18s ease}
+    .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(2,6,23,0.7)}
+    .thumb{width:100%;height:220px;border-radius:10px;overflow:hidden;background:#02121a;display:flex;align-items:center;justify-content:center}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .title{margin:10px 0 6px;font-weight:700}
+    .meta{display:flex;justify-content:space-between;align-items:center}
+    .price{color:var(--accent);font-weight:800}
+    .tag{background:rgba(255,255,255,0.02);padding:6px 8px;border-radius:10px;color:var(--muted);font-size:13px}
+
+    /* responsive */
+    @media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)} .thumb{height:180px}}
+    @media (max-width:600px){.grid{grid-template-columns:repeat(1,1fr)} header{flex-wrap:wrap} .hero h1{font-size:28px}}
+
+    /* modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(rgba(2,6,23,0.6),rgba(2,6,23,0.85));z-index:1000;padding:24px}
+    .modal.open{display:flex}
+    .modal-content{background:#071018;border-radius:12px;max-width:1000px;width:100%;display:grid;grid-template-columns:1fr 360px;gap:18px;padding:18px}
+    .zoom{display:flex;align-items:center;justify-content:center;background:#000;border-radius:8px;overflow:hidden}
+    .zoom img{width:100%;height:100%;object-fit:contain}
+    .pd{color:var(--muted)}
+    .buy{display:flex;flex-direction:column;gap:12px}
+    .btn{background:var(--accent);color:#022;padding:12px;border-radius:10px;font-weight:700;border:none;cursor:pointer}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:10px;border-radius:8px}
+
+    .close-x{position:absolute;right:24px;top:18px;color:var(--muted);cursor:pointer}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">AUTODOPS</div>
+    <nav>
+      <a href="index.html" id="homeLink">Home</a>
+      <a href="#shop" class="cta" id="shopLink">Shop</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Dark Streetwear • AUTODOPS</h1>
+    <p>Shop Jerseys, Pants & Shirts — clean designs, bold looks. Click a product to zoom and view details.</p>
+  </section>
+
+  <main class="wrap">
+    <div class="cats" id="cats"></div>
+
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <!-- modal single product zoom page (one file for all products) -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="zoom" id="zoomBox">
+        <img src="" id="zoomImg" alt="">
+      </div>
+      <div class="buy">
+        <h2 id="pTitle">Product Title</h2>
+        <p class="pd" id="pDesc">Product description goes here. High quality, comfortable fit, limited edition.</p>
+        <div class="meta">
+          <div class="price" id="pPrice">₹299</div>
+          <div class="tag" id="pTag">Best Seller</div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:12px">
+          <button class="btn" id="buyBtn"
+           onclick="window.location.href='Email.html'">BUY NOW</button>
+
+          <button class="ghost" id="closeBtn">Close</button>
+        </div>
+      </div>
+    </div>
+    <div class="close-x" id="closeX">✕</div>
+  </div>
+
+  <script>
+    // Data: categories and products. Replace image names with your actual files.
+    const DATA = {
+      "Jerseys":[
+        {id:'img1',title:'Autodops Jersey Black',img:'img1.jpg',price:299,tag:'Hot'},
+        {id:'jersey2',title:'Ribbed Jersey Blue',img:'img2.jpg',price:299,tag:'New'},
+        {id:'jersey3',title:'Racer Jersey Red',img:'img3.jpg',price:299,tag:'Limited'}
+      ],
+      "Tees":[
+        {id:'pant1',title:'cerberus',img:'img4.jpg',price:299,tag:'Comfy'},
+        {id:'pant2',title:'brand',img:'img5.jpg',price:299,tag:'Popular'},
+        {id:'pant3',title:'eternal',img:'pant3.jpg',price:299,tag:'Trending'}
+      ],
+      "COMBO":[
+        {id:'shirt1',title:'Casual Shirt',img:'img2025.jpg',price:299,tag:'Classic'},
+        {id:'shirt2',title:'Oversize Tee',img:'combo2.jpg',price:299,tag:'Street'},
+        {id:'shirt3',title:'Denim Shirt',img:'combo3.jpg',price:299,tag:'Premium'}
+      ]
+
+    }
+
+    const catsEl = document.getElementById('cats');
+    const gridEl = document.getElementById('grid');
+    const modal = document.getElementById('modal');
+    const zoomImg = document.getElementById('zoomImg');
+    const pTitle = document.getElementById('pTitle');
+    const pDesc = document.getElementById('pDesc');
+    const pPrice = document.getElementById('pPrice');
+    const pTag = document.getElementById('pTag');
+    const closeBtn = document.getElementById('closeBtn');
+    const closeX = document.getElementById('closeX');
+
+    const categories = Object.keys(DATA);
+    let active = categories[0];
+
+    function renderCats(){
+      catsEl.innerHTML='';
+      categories.forEach(cat=>{
+        const btn = document.createElement('div');
+        btn.className='cat' + (cat===active? ' active':'');
+        btn.innerText=cat;
+        btn.onclick=()=>{active=cat; renderCats(); renderGrid(); window.scrollTo({top:200,behavior:'smooth'})}
+        catsEl.appendChild(btn);
+      })
+    }
+
+    function renderGrid(){
+      gridEl.innerHTML='';
+      DATA[active].forEach(p=>{
+        const card = document.createElement('div'); card.className='card';
+        card.innerHTML = `
+          <div class="thumb"><img src="${p.img}" alt="${p.title}" onerror="this.src='placeholder.jpg'"></div>
+          <div class="title">${p.title}</div>
+          <div class="meta"><div class="price">₹${p.price}</div><div class="tag">${p.tag}</div></div>
+        `;
+        card.onclick = ()=> openProduct(p);
+        gridEl.appendChild(card);
+      })
+    }
+
+    function openProduct(p){
+      zoomImg.src = p.img;
+      pTitle.innerText = p.title;
+      pDesc.innerText = 'Premium quality • Comfortable • Machine washable • Free shipping on orders over ₹999';
+      pPrice.innerText = '₹' + p.price;
+      pTag.innerText = p.tag;
+      modal.classList.add('open');
+    }
+
+    function closeProduct(){ modal.classList.remove('open'); }
+
+    closeBtn.onclick = closeProduct; closeX.onclick = closeProduct;
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeProduct() })
+
+    // init
+    renderCats(); renderGrid();
+
+    // notes: the first jersey product uses the uploaded local file path so it'll show in preview on this machine:
+    // /mnt/data/1000125468.jpg
+    // Replace other image names (jersey2.jpg, pant1.jpg, etc.) with your actual files in the same folder.
+
+  </script>
+</body>
+</html>

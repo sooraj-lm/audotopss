@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout - Autodops</title>
+
+<style>
+    body {
+        background: #0b0f14;
+        color: white;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        padding: 40px;
+    }
+
+    .checkout-box {
+        background: rgba(255, 255, 255, 0.06);
+        padding: 25px;
+        border-radius: 15px;
+        width: 350px;
+        backdrop-filter: blur(5px);
+    }
+
+    h2 {
+        margin-bottom: 15px;
+    }
+
+    input, textarea, select {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #06c8ff;
+        border: none;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="checkout-box">
+    <h2>Checkout</h2>
+
+    <!-- ✅ SEND ORDER TO EMAIL AUTOMATICALLY -->
+    <form action="https://formsubmit.co/lionelmessi1221@gmail.com" method="POST">
+
+        <!-- Hidden settings -->
+        <input type="hidden" name="_subject" value="New Order From Autodops!">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+
+        <label>Full Name</label>
+        <input type="text" name="name" placeholder="Enter your name" required>
+
+        <label>Mobile Number</label>
+        <input type="tel" name="mobile" placeholder="Enter your mobile number" required>
+
+        <label>Address</label>
+        <textarea name="address" rows="3" placeholder="House no, Street, Area" required></textarea>
+
+        <label>Pincode</label>
+        <input type="text" name="pincode" placeholder="Pincode" required>
+
+        <label>Payment Method</label>
+        <select name="payment" required>
+            <option>Cash on Delivery</option>
+            <option>UPI</option>
+            <option>Card Payment</option>
+        </select>
+
+        <button type="submit">Place Order</button>
+    </form>
+</div>
+
+</body>
+</html>
